@@ -1,0 +1,35 @@
+body {
+    background-color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    padding: 2rem;
+}
+
+h1{
+    font-family: sans-serif;
+    margin: auto;
+}
+
+.main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 2rem;
+}
+
+.container{
+    width: 70vh;
+    height: 80vh;
+    padding: 3rem;
+
+    background-color: #fafafa;
+    border-radius: 15px;
+    box-shadow: 3px 3px 3px 3px #c6c6c6;
+}
+
+.container.interface-dados{
+    margin: 0;
+}
+
+.container.interface-visualizador{
+    margin: 0;
+}
