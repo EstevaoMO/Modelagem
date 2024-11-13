@@ -1,7 +1,7 @@
 import math
 import re
 
-# Funções matemáticas disponíveis
+# Funções matemáticas
 math_functions = {
     "sin": math.sin,
     "cos": math.cos,
@@ -9,63 +9,56 @@ math_functions = {
     "cot": lambda x: 1 / math.tan(x),
     "log": math.log,
     "sqrt": math.sqrt,
-    "exp": math.exp,  # Função exponencial
-    "e": lambda x: math.e  # A constante 'e' não precisa de parênteses
+    "e": 2.718281
 }
 
-# Função para tokenizar a expressão
+# Função de tokenização
 def tokenize(expression):
     token_pattern = re.compile(r"\s*(\d+\.\d+|\d+|[a-zA-Z]\w*|[+*/()^,-])")
     tokens = token_pattern.findall(expression)
     return tokens
 
-# Função para analisar a expressão
+# Função para parsear a expressão matemática
 def parse_expression(tokens):
     def parse_factor():
         if not tokens:
-            raise ValueError("Expressão malformada ou token faltando")
+            raise ValueError("Expressão incompleta ou token inesperado.")
         
         token = tokens.pop(0)
         
-        if token == "-":  # Tratando números negativos
-            expr = parse_factor()
-            return lambda x: -expr(x)
-        
-        elif token == "(":
-            expr = parse_expression(tokens)
-            if not tokens or tokens.pop(0) != ")":
-                raise ValueError("Parêntese fechado ausente")
+        if token == "(":
+            expr = parse_expression_inner()
+            if tokens and tokens[0] == ")":
+                tokens.pop(0)
+            else:
+                raise ValueError("Parêntese direito ')' faltando.")
             return expr
-        
         elif token.isdigit() or '.' in token:
             return lambda x: float(token)
-        
         elif token == "x":
             return lambda x: x
-        
         elif token in math_functions:
-            func = math_functions[token]
-            # Se for 'e', podemos usá-lo diretamente
             if token == "e":
-                return lambda x: func
-            # Para funções como sin, cos, log, etc., ainda precisamos de parênteses
-            if not tokens or tokens[0] != "(":
-                return func
-            tokens.pop(0)  # Remove '('
-            expr = parse_expression(tokens)
-            if not tokens or tokens.pop(0) != ")":
-                raise ValueError("Parêntese fechado ausente")
-            return lambda x: func(expr(x))
-        
+                return lambda x: math_functions[token]
+            func = math_functions[token]
+            if tokens and tokens[0] == "(":
+                tokens.pop(0)
+                expr = parse_expression_inner()
+                if tokens and tokens[0] == ")":
+                    tokens.pop(0)
+                return lambda x: func(expr(x))
+            else:
+                expr = parse_expression_inner()
+                return lambda x: func(expr(x))
         else:
             raise ValueError(f"Token inesperado: {token}")
-    
+
     def parse_power():
         expr = parse_factor()
         while tokens and tokens[0] == "^":
-            tokens.pop(0)  # Remove '^'
+            tokens.pop(0)
             right = parse_factor()
-            expr = lambda x, expr=expr, right=right: expr(x) ** right(x) if callable(expr) and callable(right) else expr(x) ** right
+            expr = lambda x, expr=expr, right=right: expr(x) ** right(x)
         return expr
 
     def parse_term():
@@ -78,7 +71,7 @@ def parse_expression(tokens):
             elif op == "/":
                 expr = lambda x, expr=expr, right=right: expr(x) / right(x)
         return expr
-    
+
     def parse_expression_inner():
         expr = parse_term()
         while tokens and tokens[0] in ("+", "-"):
@@ -92,85 +85,54 @@ def parse_expression(tokens):
 
     return parse_expression_inner()
 
-# Função para criar a função a partir da expressão
+# Função que cria a função matemática a partir da string de entrada
 def create_function(expression):
     expression = expression.replace(" ", "")
-    if "=" not in expression:
-        raise ValueError("Expressão deve estar no formato 'f(x) = ...'")
     expr = expression.split("=")[1]
     tokens = tokenize(expr)
     parsed_expr = parse_expression(tokens)
     return parsed_expr
 
-# Função para calcular xi
-def xi(lim_inf, lim_sup, f):
-    return lim_sup - (f(lim_sup) * (lim_inf - lim_sup)) / (f(lim_inf) - f(lim_sup))   
-
-# Função de Falsa Posição
-def falsa_posicao(lim_inf, lim_sup, tol, max_iter, f):
-    iteracoes = 0
-    tabela_resultados = []
-    erro_percentual = None
-    x_ant = None
-    
-    # Garantir que os limites tenham sinais opostos
-    if f(lim_inf) * f(lim_sup) > 0:
-        # Caso os sinais não sejam opostos, faz-se o ponto médio
-        mid = (lim_inf + lim_sup) / 2
-        if f(lim_inf) * f(mid) < 0:
-            lim_sup = mid
-        else:
-            lim_inf = mid
-
-    for _ in range(max_iter):
-        iteracoes += 1
-        x = xi(lim_inf, lim_sup, f)
-        fx = f(x)
-        
-        # Calcula o erro percentual
-        if x_ant is not None:
-            erro_percentual = abs((x - x_ant) / x) * 100
-        else:
-            erro_percentual = None
-        
-        # Adiciona os dados na tabela
-        tabela_resultados.append([iteracoes, lim_inf, lim_sup, x, fx, erro_percentual])
-        
-        # Verifica tolerância
-        if abs(fx) < tol or (erro_percentual is not None and erro_percentual < tol):
-            return x, iteracoes, tabela_resultados
-        
-        # Atualiza limites
-        if f(lim_inf) * fx < 0:
-            lim_sup = x
-        else:
-            lim_inf = x
-
-        x_ant = x
-
-    return x, iteracoes, tabela_resultados
-
-# Entrada do usuário
-funcao = input("Escreva a função nesse modelo: f(x) = função: ")
+# Cria a função a partir da entrada do usuário
+funcao = input("Escreva a função no formato: f(x) = expressão: ")
 f = create_function(funcao)
+
+# Função que calcula o valor de x usando a fórmula de falsa posição
+def xi(lim_inf, lim_sup):
+    return ((lim_inf * f(lim_sup)) - (lim_sup * f(lim_inf))) / (f(lim_sup) - f(lim_inf))
+
+# Função principal de falsa posição
+def falsa_posicao(lim_inf, lim_sup, tol, max_iter):
+    iteracoes = 0
+    x_anterior = None  # Variável para armazenar o valor anterior de x
+    print(f"{'Iteração':<10}{'Limite Inf':<15}{'Limite Sup':<15}{'x_i':<20}{'f(x_i)':<20}{'Erro (%)':<15}")
+    print("-" * 85)
+    
+    while iteracoes < max_iter:
+        iteracoes += 1
+        x_atual = xi(lim_inf, lim_sup)  # Calcula o valor de x como a média
+        fx = f(x_atual)  # Calcula o valor de f(x)
+        
+        # Calcula o erro percentual, se não for a primeira iteração
+        erro_perc = abs((x_atual - x_anterior) / x_atual) * 1 if x_anterior is not None else None
+        x_anterior = x_atual  # Atualiza x_anterior para a próxima iteração
+        
+        # Exibe as informações da iteração
+        print(f"{iteracoes:<10}{lim_inf:<15.10f}{lim_sup:<15.10f}{x_atual:<20.10f}{fx:<20.10f}{erro_perc if erro_perc is not None else 'N/A':<15}")
+        
+        # Condição de parada: se o erro percentual for menor que a tolerância
+        if erro_perc is not None and erro_perc < tol:
+            return x_atual, iteracoes
+        
+        # Atualiza os limites com base no sinal de f(x_i)
+        if f(lim_inf) * fx < 0:
+            lim_sup = x_atual  # Atualiza limite superior
+        elif f(lim_sup) * fx < 0:
+            lim_inf = x_atual  # Atualiza limite inferior
+    
+    return x_atual, iteracoes
+
+
 lim_inf, lim_sup = map(float, input("Digite os limites inferior e superior separados por espaço: ").split())
-tol = float(input("Digite o erro máximo permitido (em %): ")) / 100
-
-# Chama o método de Falsa Posição
-raiz, iteracoes, tabela = falsa_posicao(lim_inf, lim_sup, tol, 100, f)
-
-# Exibe a tabela de resultados
-print("\nTabela de Iterações:")
-print(f"{'Iteração':<10}{'Limite Inf':<15}{'Limite Sup':<15}{'x_i':<15}{'f(x_i)':<15}{'Erro (%)':<15}{'Tol. Atingida':<15}")
-print("-" * 90)
-for linha in tabela:
-    iteracao, li, ls, xi, fxi, erro = linha
-    tol_atingida = "Sim" if erro is not None and erro < tol else "Não"
-    
-    # Formatação do erro
-    erro_display = f"{erro:.2f}" if erro is not None else "---"
-    
-    print(f"{iteracao:<10}{li:<15.5f}{ls:<15.5f}{xi:<15.5f}{fxi:<15.5f}{erro_display:<15}{tol_atingida:<15}")
-
-# Resultado final
+raiz, iteracoes = falsa_posicao(lim_inf, lim_sup, 0.00001, 100)
 print(f"\nA raiz aproximada é: {raiz:.5f} encontrada em {iteracoes} iterações")
