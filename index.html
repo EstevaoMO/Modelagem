@@ -5,23 +5,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="estilo.css"></link>
+    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/10.0.0/math.js"></script> -->
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    <script src="./geogebra.js" defer></script>
+    <script src="script.js" defer></script>
+
     <title>Trabalho Modelagem - AP2</title>
 </head>
 
 <body>
-    <div style="font-size: 1.2em; text-align: center; margin: 2rem;"> <h1>Métodos Numéricos</h1> </div>
-
-    <section class="main">
-        <div class="container interface-dados">
-            <h1>Métodos Numéricos</h1>
-            <h3>Conteúdo</h3>
+    <div style="font-size: 1.2em; text-align: center; margin: 2rem;"> <h1> Métodos de Cálculo Numérico </h1> </div>
+    <div class="container">
+        <div class="escolhas-cliente">
+            <input class="entrada-de-dados" id="entrada-equacao" type="text" placeholder="Ex.: 2 * x ^ 4 + 5">
+            
+            <div class="opcoes-metodos">
+                <button class="opcao-metodo" id="falsa-posicao" onclick={gerarInformacoesFalsaPosicao()}>Falsa Posição</button>
+                <button class="opcao-metodo" id="newton-raphson" onclick={gerarInformacoesNewthonRaphson()}>Newton-Rhapson</button>
+            </div>
         </div>
 
-        <div class="container interface-visualizador">
-            <h1>Métodos Numéricos</h1>
-            <h3>Conteúdo</h3>
-        </div>
-    </section>
+        <div class="informacoes-do-calculo"></div>
+    </div>
+
 </body>
 
 </html>
