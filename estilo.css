@@ -1,0 +1,86 @@
+body {
+    background-color: #f1f1f1;
+    font-family: Arial, sans-serif;
+    padding: 2rem;
+}
+
+h1{
+    font-family: sans-serif;
+    margin: auto;
+}
+
+.main{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.container{
+    background-color: #fafafa;
+    box-shadow: 3px 3px 3px 3px #c6c6c6;
+    border-radius: 15px;
+    padding: 3rem;
+}
+
+.escolhas-cliente{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.entrada-de-dados{
+    font-size: 1em;
+    padding: 0.25em;
+}
+
+.opcoes-metodos{
+    margin: auto;
+}
+
+.opcao-metodo{
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    min-width: 10rem;
+    min-height: 2rem;
+    font-size: 1em;
+    text-align: center;
+    margin: 0 0.25rem;
+}
+
+.opcao-metodo:hover{
+    background-color: #c6c6c6;
+}
+
+.informacoes-do-calculo{
+    display: flex;
+    margin: 2rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    flex-direction: column;
+}
+
+#ver-grafico{
+    width: 8rem;
+    height: 2rem;
+
+    border-radius: 5px;
+    background-color: rgb(45, 118, 255);
+    font-size: 1em;
+    color: #ffffff;
+    box-shadow: 1px 1px rgb(138, 136, 169);
+    border: none;
+}
+
+#ver-grafico:hover{
+    background-color: rgb(35, 92, 198);
+    box-shadow: 0.8px 0.8px rgb(138, 136, 169);
+}
+
+#interface-da-plotagem{
+    width: 40rem;
+    height: 40rem;
+}

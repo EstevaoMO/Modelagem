@@ -1,0 +1,26 @@
+[
+    {
+        "metodo": "Falsa Posição",
+        "equacao": "2x+f(x) = 4cosx - e^x",
+        "f(xi)": 0.5555,
+        "erro%": 0.25
+    },
+    {
+        "metodo": "Falsa Posição",
+        "equacao": "f(x) = x^5 - 9x^2 + 3",
+        "f(xi)": 0.4444,
+        "erro%": 0.24      
+    },
+    {
+        "metodo": "Newton-Raphson",
+        "equacao": "2x+f(x) = 4cosx - e^x",
+        "f(xi)": 0.2222,
+        "erro%": 0.02
+    },
+        {
+        "metodo": "Newton-Raphson",
+        "equacao": "f(x) = x^5 - 9x^2 + 3",
+        "f(xi)": 0.1111,
+        "erro%": 0.01
+    }
+]
