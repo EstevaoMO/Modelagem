@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GeoGebra API</title>
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+</head>
+<body>
+    <div id="ggb-element"></div>
+
+    <script>
+        var ggbApplet;
+
+        function initGeoGebra() {
+            // Criação do applet do GeoGebra
+            ggbApplet = new GGBApplet({
+                "appName": 'graphing',
+                "width": 1000,
+                "height": 800,
+                "showToolBar": false,
+                "borderColor": null,
+                "showMenuBar": false,
+                "allowStyleBar": false,
+                "showAlgebraInput": true,
+                "appletOnLoad": () => {console.log(ggbApplet); ggbApplet.evalCommand("f(x) = " + sessionStorage.getItem('equacao'))}
+            }, true);
+            
+            // Injeção do applet no elemento HTML
+            ggbApplet.inject('ggb-element');
+        }
+
+        // Chama a função initGeoGebra quando a página for carregada
+        window.onload = initGeoGebra;
+    </script>
+</body>
+</html>
