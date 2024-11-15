@@ -1,7 +1,7 @@
+from chamar_plotagem import plotar
 import math
 import re
 
-# Funções matemáticas
 math_functions = {
     "sin": math.sin,
     "cos": math.cos,
@@ -12,20 +12,18 @@ math_functions = {
     "e": 2.718281
 }
 
-# Função de tokenização
 def tokenize(expression):
     token_pattern = re.compile(r"\s*(\d+\.\d+|\d+|[a-zA-Z]\w*|[+*/()^,-])")
     tokens = token_pattern.findall(expression)
     return tokens
 
-# Função para parsear a expressão matemática
 def parse_expression(tokens):
     def parse_factor():
         if not tokens:
-            raise ValueError("Expressão incompleta ou token inesper.")
-        
+            raise ValueError("Expressão incompleta ou token inesperado.")
+
         token = tokens.pop(0)
-        
+
         if token == "(":
             expr = parse_expression_inner()
             if tokens and tokens[0] == ")":
@@ -85,7 +83,6 @@ def parse_expression(tokens):
 
     return parse_expression_inner()
 
-# Função que cria a função matemática a partir da string de entrada
 def create_function(expression):
     expression = expression.replace(" ", "")
     expr = expression.split("=")[1]
@@ -93,58 +90,33 @@ def create_function(expression):
     parsed_expr = parse_expression(tokens)
     return parsed_expr
 
-# Função que calcula a derivada de uma função numérica
-def derivada(f, h=1e-5):
+def derivative(f, h=1e-6):
     return lambda x: (f(x + h) - f(x - h)) / (2 * h)
 
-# Função principal de Newton-Raphson
-def newton_raphson(f, f_prime, x_inicial, tol, max_iter):
-    iteracoes = 0
-    x_anterior = None
-    print(f"{'Iteração':<10}{'x_i':<20}{'f(x_i)':<20}{'f\'(x_i)':<20}{'Erro (%)':<15}")
-    print("-" * 85)
-    
-    while iteracoes < max_iter:
-        iteracoes += 1
-        fx = f(x_inicial)  # Calcula o valor de f(x)
-        f_prime_x = f_prime(x_inicial)  # Calcula o valor de f'(x)
-        
-        # Verifica se a derivada é muito pequena para evitar divisão por zero
-        if abs(f_prime_x) < 1e-10:
-            print("Derivada muito pequena! O método pode não convergir.")
-            return None, iteracoes
-        
-        # Calcula o próximo valor de x usando a fórmula de Newton-Raphson
-        x_novo = x_inicial - fx / f_prime_x
-        
-        # Calcula o erro percentual
-        erro_perc = abs((x_novo - x_inicial) / x_novo) * 100 if x_anterior is not None else None
-        x_anterior = x_novo  # Atualiza o valor de x para a próxima iteração
-        
-        # Exibe as informações da iteração
-        print(f"{iteracoes:<10}{x_novo:<20.10f}{fx:<20.10f}{f_prime_x:<20.10f}{erro_perc if erro_perc is not None else 'N/A':<15}")
-        
-        # Condição de parada: se o erro percentual for menor que a tolerância
-        if erro_perc is not None and erro_perc < tol:
-            return x_novo, iteracoes
-        
-        # Atualiza o valor de x para a próxima iteração
-        x_inicial = x_novo
-    
-    return x_novo, iteracoes
+def newton_raphson(funcao, x0, tol=1e-6, max_iter=100):
+    f = create_function(funcao)
+    f_prime = derivative(f)
+    x = x0
+    for i in range(max_iter):
+        fx = f(x)
+        fpx = f_prime(x)
+        if abs(fx) < tol:
+            print(f"Iteração {i}: Raiz encontrada em x = {x}")
+            return x
+        if fpx == 0:
+            raise ValueError("Derivada zero. O método de Newton-Raphson falhou.")
+        x_new = x - fx / fpx
+        print(f"Iteração {i}: x = {x}, f(x) = {fx}, f'(x) = {fpx}, Próximo x = {x_new}")
+        if abs(x_new - x) < tol:
+            print(f"Iteração {i}: Convergência atingida em x = {x_new}")
+            return x_new
+        x = x_new
+    raise ValueError("Número máximo de iterações atingido sem convergência.")
 
-# Solicita a função
+
 funcao = input("Escreva a função no formato: f(x) = expressão: ")
-f = create_function(funcao)
+x0 = float(input("Digite o valor inicial para x0: "))
+newton_raphson(funcao, x0)
+print('\n\n')
 
-# Cria a derivada da função
-f_prime = derivada(f)
-
-# Solicita o valor inicial
-x_inicial = float(input("Digite o valor inicial: "))
-
-# Executa o método de Newton-Raphson
-raiz, iteracoes = newton_raphson(f, f_prime, x_inicial, 0.001, 100)
-
-# Exibe a raiz encontrada e o número de iterações
-print(f"\nA raiz aproximada é: {raiz:.5f} encontrada em {iteracoes} iterações")
+plotar()
