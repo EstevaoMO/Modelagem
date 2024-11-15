@@ -101,7 +101,7 @@ def derivada(f, h=1e-5):
 def newton_raphson(f, f_prime, x_inicial, tol, max_iter):
     iteracoes = 0
     x_anterior = None
-    print(f"{'Iteração':<10}{'x_i':<20}{'f(x_i)':<20}{'f\'(x_i)':<20}{'Erro (%)':<15}")
+    print(f"{'Iteração':<10}{'x_i':<20}{'f(x_i)':<20}{'f-linha'(x_i)':<20}{'Erro (%)':<15}")
     print("-" * 85)
     
     while iteracoes < max_iter:
