@@ -1,4 +1,4 @@
-const container = document.getElementsByClassName("informacoes-do-calculo")[0];
+const container = document.getElementsByClassName("informacoes")[0];
 const input_eq = document.getElementById("entrada-equacao");
 
 const eq_armazenada = sessionStorage.getItem('equacao');
@@ -49,14 +49,8 @@ function plotar_gf(){
 }
 
 
-// Informações geradas ao escolher a opcão "Falsa Posição"
-const gerarInformacoesFalsaPosicao = (  ) => {
-    armazenarEquacao();
-    verGrafico();
-}
-
-// Informações geradas ao escolher a opcão "Newthon-Raphson"
-const gerarInformacoesNewthonRaphson = (  ) => {
+// Função para armazenar função e gerar o botão de gerar gráfico
+const usarFuncao = (  ) => {
     armazenarEquacao();
     verGrafico();
 }

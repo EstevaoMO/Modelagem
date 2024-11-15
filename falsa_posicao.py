@@ -1,3 +1,4 @@
+from chamar_plotagem import plotar
 import math
 import re
 
@@ -136,3 +137,5 @@ def falsa_posicao(lim_inf, lim_sup, tol, max_iter):
 lim_inf, lim_sup = map(float, input("Digite os limites inferior e superior separados por espaço: ").split())
 raiz, iteracoes = falsa_posicao(lim_inf, lim_sup, 0.00001, 100)
 print(f"\nA raiz aproximada é: {raiz:.5f} encontrada em {iteracoes} iterações")
+
+plotar()

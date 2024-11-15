@@ -20,12 +20,11 @@
             <input class="entrada-de-dados" id="entrada-equacao" type="text" placeholder="Ex.: 2 * x ^ 4 + 5">
             
             <div class="opcoes-metodos">
-                <button class="opcao-metodo" id="falsa-posicao" onclick={gerarInformacoesFalsaPosicao()}>Falsa Posição</button>
-                <button class="opcao-metodo" id="newton-raphson" onclick={gerarInformacoesNewthonRaphson()}>Newton-Rhapson</button>
+                <button id="usar-funcao" onclick={usarFuncao()}>Usar Função</button>
             </div>
         </div>
 
-        <div class="informacoes-do-calculo"></div>
+        <div class="informacoes"></div>
     </div>
 
 </body>
